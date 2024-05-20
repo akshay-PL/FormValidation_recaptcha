@@ -1,0 +1,122 @@
+﻿@page
+@model FormValidation.Pages.ContactModel
+@inject IConfiguration configuration
+@{
+    var sitekey = configuration["reCaptchaSettings:Sitekey"];
+}
+
+
+<script type="text/javascript">
+    var onloadCallback = function() {
+        grecaptcha.render('html_element', {
+            'sitekey': '@sitekey'
+        });
+    };
+
+    function onsubmit(event) 
+    {
+        var token = grecaptcha.getResponse();
+        document.getElementById("recaptchaTokenInputId").value = token
+
+    }
+</script>
+
+
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer>
+</script>
+
+
+
+<div class="row">
+    <div class="col-lg-9 mx-auto rounded border p-3">
+        <h2 class="text-center mb-5">Contact Form</h2>
+
+        @if (Model.errorMessage.Length>0)
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>@Model.errorMessage</strong>
+                <button type="button" class="btn-close" data-bs-dismiss aria-label="close"></button>
+            </div>
+        }
+        else if(Model.successMessage.Length>0)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>@Model.successMessage</strong>
+                <button type="button" class="btn-close" data-bs-dismiss aria-label="close"></button>
+            </div>
+        }
+        <form method="post" onsubmit="onsubmit(event)">
+            <input type="hidden" id="recaptchaTokenInputId" asp-for="RecaptchaToken" />
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">First Name</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="FirstName"/>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Last Name</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="LastName" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Email</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Phone</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="Phone" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Subject</label>
+                <div class="col-sm-8">
+                    <select class="form-select" asp-for="Subject">
+                        <option value="Order Status">Order Status</option>
+                        <option value="Refund Request">Refund Request</option>
+                        <option value="Job Application">Job Application</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <span asp-validation-for="Subject" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Message</label>
+                <div class="col-sm-8">
+                    <textarea class="form-control" asp-for="Message"></textarea>
+                    <span asp-validation-for="Message" class="text-danger"></span>
+                </div>
+                
+            </div>
+
+            <div class="row-mb-3">
+                <div class="offset-sm-4 col-sm-8">
+                    <div id="html_element"></div>
+                    </hr>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>
